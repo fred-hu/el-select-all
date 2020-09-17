@@ -8,7 +8,7 @@
 ```
 npm i el-select-all
 ```
->app.vue里引入
+>main.js里引入
 
 ```
 import ElSelectAll from 'el-select-all'
