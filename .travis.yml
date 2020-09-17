@@ -19,7 +19,7 @@ install:
 script:
 - npm run build
 after_script:
-- cd ./public
+- cd ./dist
 - git init
 - git config user.name "hufei1993"
 - git config user.email "hufei_yx@sina.com"
