@@ -14,6 +14,11 @@ npm i el-select-all
 import ElSelectAll from 'el-select-all'
 Vue.use(ElSelectAll)
 ```
+>组件用例
+
+```
+<ElSelectAll v-model="storeCodes" filterable multiple collapse-tags @change="onChange" :options="mdoptionsList" />
+```
 ###### npm包地址:
 > [https://www.npmjs.com/package/el-select-all](el-select-all)
 
