@@ -6,16 +6,9 @@
 </template>
 
 <script>
-import Vue from 'vue'
-import { Select, Option } from 'element-ui';
-import ElSelectAll from './components/ElSelectAll'
-Vue.component(Select.name, Select);
-Vue.component(Option.name, Option);
-// Vue.use(Select)
 export default {
   name: 'App',
   components: {
-    ElSelectAll
   },
   data() {
     return {
