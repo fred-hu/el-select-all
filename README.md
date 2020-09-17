@@ -1,24 +1,22 @@
 # el-select-all
+###### 描述:
+> 带有全部选项的el-select组件
 
-## Project setup
-```
-npm install
-```
+###### 使用:
+>安装依赖包
 
-### Compiles and hot-reloads for development
 ```
-npm run serve
+npm i el-select-all
 ```
+>app.vue里引入
 
-### Compiles and minifies for production
 ```
-npm run build
+import ElSelectAll from 'el-select-all'
+Vue.use(ElSelectAll)
 ```
+###### npm包地址:
+> [https://www.npmjs.com/package/el-select-all](el-select-all)
 
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+###### 示例:
+![示例](https://raw.githubusercontent.com/hufei1993/el-select-all/master/src/assets/elselect.png)
+![示例](https://raw.githubusercontent.com/hufei1993/el-select-all/master/src/assets/elselect.gif)
