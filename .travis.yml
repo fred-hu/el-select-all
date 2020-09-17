@@ -19,11 +19,11 @@ install:
 script:
 - npm run build
 after_script:
-- cd docs
+- cd ./public
 - git init
 - git config user.name "hufei1993"
 - git config user.email "hufei_yx@sina.com"
 - git add --all
 - git commit -m "Update docs via travis"
-- git push -f "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
+- git push -f --quiet "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
 # build lifecycle end
