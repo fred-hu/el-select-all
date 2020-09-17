@@ -22,11 +22,4 @@ elSelectAll.install = function (Vue) {
   // }
   Vue.component(elSelectAll.name,elSelectAll)
 }
-if (typeof exports == "object") {
-  module.exports = elSelectAll
-} else if (typeof define == "function" && define.amd) {
-  define([], function(){ return elSelectAll })
-} else if (window.Vue) {
-  window.elSelectAll = elSelectAll
-  Vue.use(elSelectAll)
-}
+export default elSelectAll

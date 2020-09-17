@@ -6,6 +6,7 @@
 
 <script>
 export default {
+  name: 'ElSelectAll',
   props: {
     value: {
       type: Array,
