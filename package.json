@@ -47,6 +47,12 @@
     "url": "git+https://github.com/hufei1993/el-select-all.git"
   },
   "keywords": [
-    "element-ui,el-select,select-all,全选"
-  ]
+    "select-all",
+    "element-ui",
+    "el-select",
+    "vue",
+    "select",
+    "全选"
+  ],
+  "author": "hufei"
 }
