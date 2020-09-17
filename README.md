@@ -19,6 +19,10 @@ Vue.use(ElSelectAll)
 ```
 <ElSelectAll v-model="storeCodes" filterable multiple collapse-tags @change="onChange" :options="mdoptionsList" />
 ```
+
+###### 预览地址:
+> [https://hufei1993.github.io/el-select-all](https://hufei1993.github.io/el-select-all)
+
 ###### npm包地址:
 > [el-select-all](https://www.npmjs.com/package/el-select-all)
 
