@@ -1,0 +1,29 @@
+	language: node_js
+	node_js: 
+	- "9"
+	# 环境变量
+	env:
+	global:
+	- GH_REF: github.com/hufei1993/el-select-all.git
+	- secure: "lTJ1btlSVtBA4VbjRBUmuoiuv8WQp7ABI+f3pUNYxgz0KxrgkIl09Ku1BoiaPh36mAzkEsIMo6Hm4N6Y838yGrF/Z+ZSeWWlHsni+kHKhbyJrtY6DVihnIUyT26a+YCcif3lGf1s6fZ0RiW9PpQ3fUK7Yrlcri0gmEKI+UixD67bGMEd2zPLcXdbJmqborCsdOAODZTmlgQxGYqbcUCjELrQLc+rXC6/uO+1CO1KAppmeoBGphVaPHQXtZSTGXPyXk8oPJYP1P3p9FUZY6FRUzzbJ/W4NNF6Nj+d5wu9ijfb9z1fSaDvHAI8mB+9vgq0nvEio+2hohALdciKW3+zOyquIfxd7b9niH7YRZUfGeMKkNkAZGzutZfh+RjMDTQGVoEp4g7G/APqdluEn5grPSUHu8kkoVn2n0xQEt4IH6UUckjxEsebtjrO+srWikKo6WteR1A3kmQkT7Ltw14Na3HDUYAuyjBPRxcBlC/ZXxvNjt4JGbGgWa0zDgt97mMAzebuZ7F9uEpQLb9cAiNZ20TboldLLBZY/CxDGvqKIErln4+y6AzcH5Ms6Jf0jR0R5v9ncNWhJApRO+GjEmw3wlqPKJxk+jXaeDKr4Do8dkaIuSD8iLi+CM0xmkNaXCEmfTApB5GVqBaVv+T9c4H6kKu/0OJ7G0WUaHME/l8vzW0="
+	# 只检测 master 分支的 push
+	branches:
+	only:
+	- master
+	# build lifecycle start
+	before_install:
+	- node -v
+	- npm -v
+	install:
+	- npm i
+	script:
+	- npm run build
+	after_script:
+	- cd docs
+	- git init
+	- git config user.name "hufei1993"
+	- git config user.email "hufei_yx@sina.com"
+	- git add --all
+	- git commit -m "Update docs via travis"
+	- git push -f "https://${GH_TOKEN}@${GH_REF}" master:gh-pages
+# build lifecycle end
