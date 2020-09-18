@@ -21,11 +21,11 @@ Vue.use(ElSelectAll)
 ```
 
 ###### 预览地址:
-> [https://hufei1993.github.io/el-select-all](https://hufei1993.github.io/el-select-all)
+> [https://fred-hu.github.io/el-select-all](https://fred-hu.github.io/el-select-all)
 
 ###### npm包地址:
 > [el-select-all](https://www.npmjs.com/package/el-select-all)
 
 ###### 示例:
-![示例](https://raw.githubusercontent.com/hufei1993/el-select-all/master/src/assets/elselect.png)
-![示例](https://raw.githubusercontent.com/hufei1993/el-select-all/master/src/assets/elselect.gif)
+![示例](https://raw.githubusercontent.com/fred-hu/el-select-all/master/src/assets/elselect.png)
+![示例](https://raw.githubusercontent.com/fred-hu/el-select-all/master/src/assets/elselect.gif)
