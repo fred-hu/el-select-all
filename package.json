@@ -45,7 +45,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hufei1993/el-select-all.git"
+    "url": "git+https://github.com/fred-hu/el-select-all.git"
   },
   "keywords": [
     "select-all",
