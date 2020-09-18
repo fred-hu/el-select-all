@@ -1,6 +1,6 @@
 {
   "name": "el-select-all",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "带有全部选项的el-select组件",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -23,7 +23,9 @@
     "eslint-plugin-vue": "^6.2.2",
     "vue-template-compiler": "^2.6.11"
   },
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  },
   "eslintConfig": {
     "root": true,
     "env": {
