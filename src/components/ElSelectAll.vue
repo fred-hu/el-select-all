@@ -1,5 +1,5 @@
 <template>
-  <el-select v-model="selected" v-bind="$attrsAll" v-on="$listenserAll" @change="onChange">
+  <el-select v-model="selected" multiple v-bind="$attrsAll" v-on="$listenserAll" @change="onChange">
     <el-option v-for="item in mdoptionsList" :key="item.key" :label="item.label" :value="item.value" />
   </el-select>
 </template>
@@ -21,15 +21,13 @@ export default {
       }
     }
   },
-  watch: {
-    selected: {
-      immediate: true,
-      deep: true,
-      handler(val) {
-        this.$emit('input', val.filter(v => {
-          return v !== 'all'
-        }))
-      }
+  data() {
+    const selected = this.value || []
+    return {
+      selected,
+      mdoptionsValue: [],
+      oldMdoptionsValue: [],
+      mdoptionsList: []
     }
   },
   computed: {
@@ -45,32 +43,45 @@ export default {
       const _this = this
       return Object.assign({}, this.$listeners, {
         change: () => {
-          this.$emit('change', _this.selected.filter(v => {
+          this.$emit('change', (_this.selected || []).filter(v => {
             return v !== 'all'
           }))
         },
         input: () => {
-          this.$emit('input', _this.selected.filter(v => {
+          this.$emit('input', (_this.selected || []).filter(v => {
             return v !== 'all'
           }))
         }
       });
     }
   },
-  data() {
-    const selected = this.value || []
-    return {
-      selected,
-      mdoptionsValue: [],
-      oldMdoptionsValue: [],
-      mdoptionsList: [{
-        key: 'all',
-        value: 'all',
-        label: '全部'
-      }, ...this.options],
+  watch: {
+    selected: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        this.$emit('input', (val || []).filter(v => {
+          return v !== 'all'
+        }))
+      }
+    },
+    options: {
+      immediate: true,
+      deep: true,
+      handler(val) {
+        if (!val || val.length === 0) {
+          this.mdoptionsList = []
+        } else {
+          this.mdoptionsList = [{
+            key: 'all',
+            value: 'all',
+            label: '全部'
+          }, ...val]
+        }
+      }
     }
   },
-  mounted () {
+  mounted() {
   },
   methods: {
     onChange(val) {
