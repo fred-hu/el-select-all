@@ -15,9 +15,9 @@ before_install:
 - node -v
 - npm -v
 install:
-- npm i
+- npm install --registry=https://registry.npm.taobao.org
 script:
-- npm run build
+- npm run build:travis
 after_script:
 - cd ./dist
 - git init
