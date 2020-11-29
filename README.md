@@ -21,6 +21,8 @@ Vue.use(ElSelectAll)
 ```
 
 ###### 预览地址:
+> [http://components.marlong.cn/](http://components.marlong.cn/)
+
 > [https://fred-hu.github.io/el-select-all](https://fred-hu.github.io/el-select-all)
 
 ###### npm包地址:
