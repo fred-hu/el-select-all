@@ -1,10 +1,11 @@
 {
   "name": "el-select-all",
-  "version": "0.1.4",
+  "version": "0.1.8",
   "description": "带有全部选项的el-select组件",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "build:genkins": "cross-env NODE_ENV=development vue-cli-service build",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -44,7 +45,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/hufei1993/el-select-all.git"
+    "url": "git+https://github.com/fred-hu/el-select-all.git"
   },
   "keywords": [
     "select-all",
