@@ -1,4 +1,4 @@
-name: Deploy to GitHub Pages
+name: Node.js CI
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build-and-deploy:
+  build:
 
     runs-on: ubuntu-latest
 
@@ -31,4 +31,3 @@ jobs:
       with:
         branch: gh-pages  # 部署到的分支
         folder: dist  # 构建输出的文件夹
-        clean: true  # 是否要清除输出目录
