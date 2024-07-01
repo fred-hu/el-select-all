@@ -1,7 +1,4 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
-
-name: Node.js CI
+name: Deploy to GitHub Pages
 
 on:
   push:
@@ -10,7 +7,7 @@ on:
     branches: [ "master" ]
 
 jobs:
-  build:
+  build-and-deploy:
 
     runs-on: ubuntu-latest
 
@@ -34,3 +31,4 @@ jobs:
       with:
         branch: gh-pages  # 部署到的分支
         folder: dist  # 构建输出的文件夹
+        clean: true  # 是否要清除输出目录
