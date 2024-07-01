@@ -1,7 +1,14 @@
 <template>
   <div id="el-select-all">
-    {{ storeCodes }}
-    <ElSelectAll v-model="storeCodes" filterable multiple collapse-tags @change="onChange" :options="mdoptionsList" />
+    <div>
+      <ElSelectAll v-model="storeCodes" filterable multiple collapse-tags @change="onChange" :options="mdoptionsList" />
+      {{ storeCodes }}
+    </div>
+    <div>
+      <ElSelectAll v-model="storeCodes2" filterable multiple collapse-tags :widthAll="false" @change="onChange2" :options="mdoptionsList" />
+      {{ storeCodes2 }}
+    </div>
+    
   </div>
 </template>
 
@@ -13,6 +20,7 @@ export default {
   data() {
     return {
       storeCodes: ['test'],
+      storeCodes2: ['test'],
       mdoptionsList: [{
         key: 'test',
         value: 'test',
@@ -30,6 +38,9 @@ export default {
   },
   methods: {
     onChange(val) {
+      console.log(val)
+    },
+    onChange2(val) {
       console.log(val)
     }
   }
