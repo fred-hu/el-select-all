@@ -18,6 +18,7 @@ Vue.use(ElSelectAll)
 
 ```
 <ElSelectAll v-model="storeCodes" filterable multiple collapse-tags @change="onChange" :options="mdoptionsList" />
+<ElSelectAll v-model="storeCodes" filterable multiple collapse-tags @change="onChange" :widthAll="false" :options="mdoptionsList" />
 ```
 
 ###### 预览地址:
