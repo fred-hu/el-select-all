@@ -19,6 +19,10 @@ export default {
       default: () => {
         return []
       }
+    },
+    widthAll: { // Add the all prop
+      type: Boolean,
+      default: true
     }
   },
   data() {
@@ -72,11 +76,11 @@ export default {
         if (!val || val.length === 0) {
           this.mdoptionsList = []
         } else {
-          this.mdoptionsList = [{
+          this.mdoptionsList = this.widthAll ? [{
             key: 'all',
             value: 'all',
             label: '全部'
-          }, ...val]
+          }, ...val] : [...val];
         }
       }
     }
@@ -106,7 +110,7 @@ export default {
       }
       // 全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
       if (!oldVal.includes('all') && !val.includes('all')) {
-        if (val.length === allValues.length - 1) this.selected = ['all'].concat(val)
+        if (val.length === allValues.length - 1) this.selected = (this.widthAll ? ['all'] : []).concat(val)
       }
       // 储存当前最后的结果 作为下次的老数据
       this.oldMdoptionsValue[1] = this.selected
