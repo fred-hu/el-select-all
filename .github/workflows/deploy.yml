@@ -1,36 +1,78 @@
-# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
-# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+# 1 工作流名称
+name: CI
 
-name: Node.js CI
+# 2 工作流执行名称
+run-name: ${{ github.actor }} is update repo, start building...
 
+# 3 触发器
 on:
+  # push 推送
   push:
-    branches: [ "master" ]
+    branches: ["master"]
+  # PR 合并提交
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
 
+  # 允许您从“操作”选项卡手动运行此工作流
+  workflow_dispatch:
+
+# 4 设置权限（文件是可以被读写修改的）
+permissions:
+  contents: write
+
+# 工作1
 jobs:
+  # 任务名称
   build:
-
+    # 执行平台
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [16.x]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
+    # 任务步骤
     steps:
-    - uses: actions/checkout@v4
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: npm i
-    - run: npm run build:travis
+      # 1 将代码仓库的内容拉取（或称为检出）到工作目录中，以便在下面的工作流程中使用
+      - name: Checkout code (检出代码)
+        uses: actions/checkout@v3
+      # 2 安装 node 环境，并设置版本为 16
+      - name: Setup Node.js (设置 node 版本)
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+      # 3 安装 pnpm
+      - name: Install pnpm (安装 pnpm)
+        uses: pnpm/action-setup@v2
+        with:
+          version: 7.0.0
+      # 4 安装依赖
+      - name: Install dependencies (安装依赖)
+        run: pnpm install
 
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@4.1.4
-      with:
-        branch: gh-pages  # 部署到的分支
-        folder: dist  # 构建输出的文件夹
+      # 5 代码检查，无该命令所以不执行
+      # - name: lint (代码检查)
+      #   run: pnpm run lint
+
+      # 6 跑测试，无该命令所以不执行
+      # - name: Test (测试)
+      #   run: pnpm run test
+
+      # 7 构建项目
+      - name: Build (构建)
+        run: pnpm run build:travis
+      # 8 上传构建产物（actions/upload-artifact@v3 会上传工作流程中的文件，允许您在作业之间共享数据并在工作流程完成后存储数据）
+      - name:  Upload build artifacts (上传构建产物)
+        uses: actions/upload-pages-artifact@v2
+        with:
+          path: "./dist"
+
+      # 9 部署 GitHub Pages
+      # - name: Deploy to GitHub Pages(部署到 GitHub Pages)
+      #   uses: actions/deploy-pages@v2
+      #   with:
+      #     token: ${{ secrets.GITHUB_TOKEN }}
+
+      # 10 部署到 gh-pages分支
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./dist
+          force_orphan: true

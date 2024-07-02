@@ -1,4 +1,7 @@
 # el-select-all
+
+[![pages-build-deployment](https://github.com/fred-hu/el-select-all/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/fred-hu/el-select-all/actions/workflows/pages/pages-build-deployment)
+
 ###### 描述:
 > 带有全部选项的el-select组件
 
