@@ -1,6 +1,6 @@
 <template>
-  <el-select v-model="selected" multiple v-bind="$attrsAll" v-on="$listenserAll" @change="onChange">
-    <el-option v-for="item in mdoptionsList" :key="item.key" :label="item.label" :value="item.value" />
+  <el-select v-model="selected" multiple v-bind="$attrsAll" v-on="$listenserAll" @change="onChange" :size="size">
+    <el-option v-for="item in mdoptionsList" :key="item[props.value]" :label="item[props.label]" :value="item[props.value]" />
   </el-select>
 </template>
 
@@ -12,18 +12,32 @@ export default {
       type: Array,
       default: () => {
         return []
-      }
+      },
     },
     options: {
       type: Array,
       default: () => {
         return []
-      }
+      },
     },
-    widthAll: { // Add the all prop
+    withAll: {
       type: Boolean,
-      default: true
-    }
+      default: true,
+    },
+    selectAll: {
+      type: Boolean,
+      default: false,
+    },
+    props: {
+      type: Object,
+      default: () => {
+        return { label: 'label', value: 'value' }
+      },
+    },
+    size: {
+      type: String,
+      default: 'small',
+    },
   },
   data() {
     const selected = this.value || []
@@ -31,7 +45,7 @@ export default {
       selected,
       mdoptionsValue: [],
       oldMdoptionsValue: [],
-      mdoptionsList: []
+      mdoptionsList: [],
     }
   },
   computed: {
@@ -39,7 +53,7 @@ export default {
       // const val = this.$vnode.data.model && this.$vnode.data.model.value;
       const result = {
         // value: val,
-        ...this.$attrs
+        ...this.$attrs,
       }
       return result
     },
@@ -47,27 +61,36 @@ export default {
       const _this = this
       return Object.assign({}, this.$listeners, {
         change: () => {
-          this.$emit('change', (_this.selected || []).filter(v => {
-            return v !== 'all'
-          }))
+          this.$emit(
+            'change',
+            (_this.selected || []).filter(v => {
+              return v !== 'all'
+            })
+          )
         },
         input: () => {
-          this.$emit('input', (_this.selected || []).filter(v => {
-            return v !== 'all'
-          }))
-        }
-      });
-    }
+          this.$emit(
+            'input',
+            (_this.selected || []).filter(v => {
+              return v !== 'all'
+            })
+          )
+        },
+      })
+    },
   },
   watch: {
     selected: {
       immediate: true,
       deep: true,
       handler(val) {
-        this.$emit('input', (val || []).filter(v => {
-          return v !== 'all'
-        }))
-      }
+        this.$emit(
+          'input',
+          (val || []).filter(v => {
+            return v !== 'all'
+          })
+        )
+      },
     },
     options: {
       immediate: true,
@@ -76,16 +99,33 @@ export default {
         if (!val || val.length === 0) {
           this.mdoptionsList = []
         } else {
-          this.mdoptionsList = this.widthAll ? [{
-            key: 'all',
-            value: 'all',
-            label: '全部'
-          }, ...val] : [...val];
+          this.mdoptionsList = this.withAll
+            ? [
+                {
+                  [this.props.value]: 'all',
+                  [this.props.label]: '全部',
+                },
+                ...val,
+              ]
+            : [...val]
         }
-      }
-    }
+      },
+    },
   },
   mounted() {
+    if (this.selectAll) {
+      this.selected = []
+      for (const item of this.mdoptionsList) {
+        this.selected.push(item[this.props.value])
+      }
+      this.oldMdoptionsValue[1] = this.selected
+      this.$emit(
+        'input',
+        (this.selected || []).filter(v => {
+          return v !== 'all'
+        })
+      )
+    }
   },
   methods: {
     onChange(val) {
@@ -93,7 +133,7 @@ export default {
       const allValues = []
       // 保留所有值
       for (const item of this.mdoptionsList) {
-        allValues.push(item.value)
+        allValues.push(item[this.props.value])
       }
       // 用来储存上一次的值，可以进行对比
       const oldVal = this.oldMdoptionsValue.length === 1 ? [] : this.oldMdoptionsValue[1] || []
@@ -110,14 +150,17 @@ export default {
       }
       // 全选未选 但是其他选项全部选上 则全选选上 上次和当前 都没有全选
       if (!oldVal.includes('all') && !val.includes('all')) {
-        if (val.length === allValues.length - 1) this.selected = (this.widthAll ? ['all'] : []).concat(val)
+        if (val.length === allValues.length - 1) this.selected = (this.withAll ? ['all'] : []).concat(val)
       }
-      this.$emit('input', (this.selected || []).filter(v => {
-        return v !== 'all'
-      }))
+      this.$emit(
+        'input',
+        (this.selected || []).filter(v => {
+          return v !== 'all'
+        })
+      )
       // 储存当前最后的结果 作为下次的老数据
       this.oldMdoptionsValue[1] = this.selected
-    }
-  }
+    },
+  },
 }
 </script>
