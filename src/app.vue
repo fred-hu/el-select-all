@@ -39,9 +39,11 @@ export default {
   methods: {
     onChange(val) {
       console.log(val)
+      console.log(this.storeCodes)
     },
     onChange2(val) {
       console.log(val)
+      console.log(this.storeCodes2)
     }
   }
 }
