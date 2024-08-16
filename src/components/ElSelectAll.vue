@@ -112,6 +112,9 @@ export default {
       if (!oldVal.includes('all') && !val.includes('all')) {
         if (val.length === allValues.length - 1) this.selected = (this.widthAll ? ['all'] : []).concat(val)
       }
+      this.$emit('input', (this.selected || []).filter(v => {
+        return v !== 'all'
+      }))
       // 储存当前最后的结果 作为下次的老数据
       this.oldMdoptionsValue[1] = this.selected
     }
