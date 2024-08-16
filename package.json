@@ -1,6 +1,6 @@
 {
   "name": "el-select-all",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "带有全部选项的el-select组件",
   "scripts": {
     "serve": "vue-cli-service serve",
