@@ -12,65 +12,54 @@ on:
   # PR 合并提交
   pull_request:
     branches: ["master"]
-
   # 允许您从“操作”选项卡手动运行此工作流
   workflow_dispatch:
 
-# 4 设置权限（文件是可以被读写修改的）
+# 4 设置权限（部署 gh-pages 需要写权限）
 permissions:
   contents: write
 
-# 工作1
 jobs:
-  # 任务名称
   build:
-    # 执行平台
     runs-on: ubuntu-latest
 
-    # 任务步骤
     steps:
-      # 1 将代码仓库的内容拉取（或称为检出）到工作目录中，以便在下面的工作流程中使用
+      # 1 检出代码
       - name: Checkout code (检出代码)
-        uses: actions/checkout@v3
-      # 2 安装 node 环境，并设置版本为 16
+        uses: actions/checkout@v4
+
+      # 2 安装 pnpm（需在 setup-node 之前，以便 setup-node 读取 pnpm store 做缓存）
+      - name: Install pnpm (安装 pnpm)
+        uses: pnpm/action-setup@v4
+        with:
+          version: 7.33.7
+
+      # 3 安装 node（版本与 pnpm-lock.yaml 的格式保持一致）
       - name: Setup Node.js (设置 node 版本)
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
-      # 3 安装 pnpm
-      - name: Install pnpm (安装 pnpm)
-        uses: pnpm/action-setup@v2
-        with:
-          version: 7.0.0
-      # 4 安装依赖
+          cache: pnpm
+
+      # 4 安装依赖（lockfile 与 package.json 不一致时直接失败）
       - name: Install dependencies (安装依赖)
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
-      # 5 代码检查，无该命令所以不执行
-      # - name: lint (代码检查)
-      #   run: pnpm run lint
+      # 5 代码检查
+      - name: Lint (代码检查)
+        run: pnpm run lint
 
-      # 6 跑测试，无该命令所以不执行
-      # - name: Test (测试)
-      #   run: pnpm run test
+      # 6 单元测试
+      - name: Test (单元测试)
+        run: pnpm run test
 
-      # 7 构建项目
+      # 7 构建演示站点
       - name: Build (构建)
         run: pnpm run build:travis
-      # 8 上传构建产物（actions/upload-artifact@v3 会上传工作流程中的文件，允许您在作业之间共享数据并在工作流程完成后存储数据）
-      - name:  Upload build artifacts (上传构建产物)
-        uses: actions/upload-pages-artifact@v2
-        with:
-          path: "./dist"
 
-      # 9 部署 GitHub Pages
-      # - name: Deploy to GitHub Pages(部署到 GitHub Pages)
-      #   uses: actions/deploy-pages@v2
-      #   with:
-      #     token: ${{ secrets.GITHUB_TOKEN }}
-
-      # 10 部署到 gh-pages分支
-      - name: Deploy to GitHub Pages
+      # 8 部署到 gh-pages 分支（仅在 push 到 master 时执行，PR 只做校验）
+      - name: Deploy to GitHub Pages (部署到 gh-pages 分支)
+        if: github.event_name == 'push'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
