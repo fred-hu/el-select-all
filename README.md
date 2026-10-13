@@ -77,7 +77,9 @@ pnpm run build:lib  # 构建发布用的库产物到 lib/ (commonjs + umd + umd.
 
 **1. 演示站点（自动发布）**
 
-> 向 master 推送或提交 PR 会触发 [.github/workflows/deploy.yml](https://github.com/fred-hu/el-select-all/blob/master/.github/workflows/deploy.yml)：
+> 合并到 master 前的校验由 [.github/workflows/ci.yml](https://github.com/fred-hu/el-select-all/blob/master/.github/workflows/ci.yml) 负责（仅 PR、目标是 master）：lint / 测试 / 构建，**不部署**
+
+> push 到 master 由 [.github/workflows/deploy.yml](https://github.com/fred-hu/el-select-all/blob/master/.github/workflows/deploy.yml) 负责部署：
 
 ```
 checkout -> pnpm 7.33.7 -> Node 16 -> pnpm install --frozen-lockfile
@@ -85,7 +87,11 @@ checkout -> pnpm 7.33.7 -> Node 16 -> pnpm install --frozen-lockfile
 -> peaceiris/actions-gh-pages (publish_dir: ./dist, force_orphan: true) 推送到 gh-pages 分支
 ```
 
-> `build:travis` 会把 NODE_ENV 设为 travis，vue.config.js 中 publicPath 随之变为 /el-select-all/，因此站点地址为 [https://fred-hu.github.io/el-select-all](https://fred-hu.github.io/el-select-all)；PR 只做 lint/测试/构建校验，不部署
+> `build:travis` 会把 NODE_ENV 设为 travis，vue.config.js 中 publicPath 随之变为 /el-select-all/，因此站点地址为 [https://fred-hu.github.io/el-select-all](https://fred-hu.github.io/el-select-all)
+
+> 注意: Actions 列表里的 Branch 列显示的是**触发提交所在的分支**，PR 校验会显示源分支（如 develop），但它只是校验，部署步骤已被 `if: github.ref == 'refs/heads/master'` 跳过
+
+> 两个工作流都配置了 concurrency：PR 校验的新提交会取消旧的运行，部署则排队执行避免中断
 
 **2. npm 包（自动发布）**
 
@@ -99,7 +105,11 @@ git tag vx.y.z
 git push origin master --tags
 ```
 
-> 首次使用前需要在仓库 Settings → Secrets and variables → Actions 中配置 `NPM_TOKEN`（npm 的 Automation Token），否则发布步骤会报 ENEEDAUTH
+> 首次使用前需要在仓库 Settings → Secrets and variables → Actions 中配置 `NPM_TOKEN`，值为 npm 的 **Granular access token**（npm 自 2025-11 起已下线经典的 automation token）：登录 npmjs.com → 右上角头像 → **Access Tokens** → **Generate New Token** → 在 Packages and scopes 里给 `el-select-all` 授予 **Read and write**，并设置有效期 → 生成后复制（只显示一次）
+
+> 也可以不依赖 token：改用 npm 的 **Trusted Publishing（OIDC）**，在 npm 包页面的 Settings → Trusted Publisher 绑定 GitHub 仓库与工作流文件名，工作流加 `permissions: id-token: write` 即可，且会自动生成 provenance（注意：新建的 Trusted Publisher 配置必须在 2 天内完成首次发布，否则失效）
+
+> 提醒: npm 将于 **2027-01** 移除用 token 直接发布的能力，届时需迁移到 Trusted Publishing，或改用 stage-only token + `npm stage publish`（由维护者 2FA 审批）
 
 > 工作流会在构建前先做三项校验，避免跑到最后才失败：`NPM_TOKEN` 是否已配置（未配置直接报错）、package.json 版本是否已存在于 npm（已存在直接报错）、tag 与版本号是否一致
 

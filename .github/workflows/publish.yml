@@ -12,19 +12,19 @@ permissions:
 
 jobs:
   publish:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
       - name: Checkout code (检出代码)
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Install pnpm (安装 pnpm)
-        uses: pnpm/action-setup@v4
+        uses: pnpm/action-setup@v5
         with:
           version: 7.33.7
 
       - name: Setup Node.js (设置 node 版本)
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 16
           cache: pnpm
@@ -39,7 +39,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ -z "${NODE_AUTH_TOKEN}" ]; then
-            echo "::error::未配置 NPM_TOKEN secret，请在仓库 Settings → Secrets and variables → Actions 中添加 npm 的 Automation Token"
+            echo "::error::未配置 NPM_TOKEN secret：请在仓库 Settings → Secrets and variables → Actions 中添加 npm granular access token（npmjs.com → 头像 → Access Tokens → Generate New Token，需给该包 Read and write 权限）"
             exit 1
           fi
 
