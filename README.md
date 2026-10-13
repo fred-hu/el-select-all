@@ -109,6 +109,8 @@ git push origin master --tags
 
 > 也可以不依赖 token：改用 npm 的 **Trusted Publishing（OIDC）**，在 npm 包页面的 Settings → Trusted Publisher 绑定 GitHub 仓库与工作流文件名，工作流加 `permissions: id-token: write` 即可，且会自动生成 provenance（注意：新建的 Trusted Publisher 配置必须在 2 天内完成首次发布，否则失效）
 
+> 提醒: npm 将于 **2027-01** 移除用 token 直接发布的能力，届时需迁移到 Trusted Publishing，或改用 stage-only token + `npm stage publish`（由维护者 2FA 审批）
+
 > 工作流会在构建前先做三项校验，避免跑到最后才失败：`NPM_TOKEN` 是否已配置（未配置直接报错）、package.json 版本是否已存在于 npm（已存在直接报错）、tag 与版本号是否一致
 
 > 也可以在 Actions 页面手动触发（workflow_dispatch）：此时会发布当前分支 package.json 里的版本，因此同样必须先提升 version；若该版本已存在于 npm 会被上述校验拦下
