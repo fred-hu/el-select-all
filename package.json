@@ -1,6 +1,6 @@
 {
   "name": "el-select-all",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "带有全部选项的el-select组件",
   "scripts": {
     "serve": "vue-cli-service serve",
@@ -14,7 +14,8 @@
   "files": [
     "lib/*.js",
     "src/components",
-    "src/libs"
+    "src/libs",
+    "CHANGELOG.md"
   ],
   "main": "lib/el-select-all.common.js",
   "unpkg": "lib/el-select-all.umd.min.js",
