@@ -33,13 +33,35 @@ jobs:
       - name: Install dependencies (安装依赖)
         run: pnpm install --frozen-lockfile
 
+      # 未配置 NPM_TOKEN 时尽早失败，并给出明确指引（否则只会在最后一步报 ENEEDAUTH）
+      - name: Check NPM token (校验 NPM_TOKEN 已配置)
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN}" ]; then
+            echo "::error::未配置 NPM_TOKEN secret，请在仓库 Settings → Secrets and variables → Actions 中添加 npm 的 Automation Token"
+            exit 1
+          fi
+
+      # 版本已存在时尽早失败（手动触发同样生效，避免发布到一半才发现版本冲突）
+      - name: Check version is not published (校验版本未发布过)
+        run: |
+          NAME=$(node -p "require('./package.json').name")
+          VERSION=$(node -p "require('./package.json').version")
+          STATUS=$(curl -s -o /dev/null -w "%{http_code}" "https://registry.npmjs.org/${NAME}/${VERSION}")
+          if [ "$STATUS" = "200" ]; then
+            echo "::error::${NAME}@${VERSION} 已存在于 npm，请先提升 package.json 中的 version"
+            exit 1
+          fi
+          echo "${NAME}@${VERSION} 尚未发布，继续执行"
+
       # tag 与 package.json 版本不一致时直接失败，避免发错版本
       - name: Check tag matches package version (校验 tag 与版本号一致)
         if: startsWith(github.ref, 'refs/tags/')
         run: |
           PKG_VERSION="v$(node -p "require('./package.json').version")"
           if [ "$PKG_VERSION" != "${GITHUB_REF_NAME}" ]; then
-            echo "tag ${GITHUB_REF_NAME} 与 package.json 版本 ${PKG_VERSION} 不一致"
+            echo "::error::tag ${GITHUB_REF_NAME} 与 package.json 版本 ${PKG_VERSION} 不一致"
             exit 1
           fi
 
