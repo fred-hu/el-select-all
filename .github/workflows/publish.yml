@@ -39,7 +39,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           if [ -z "${NODE_AUTH_TOKEN}" ]; then
-            echo "::error::未配置 NPM_TOKEN secret，请在仓库 Settings → Secrets and variables → Actions 中添加 npm 的 Automation Token"
+            echo "::error::未配置 NPM_TOKEN secret：请在仓库 Settings → Secrets and variables → Actions 中添加 npm granular access token（npmjs.com → 头像 → Access Tokens → Generate New Token，需给该包 Read and write 权限）"
             exit 1
           fi
 

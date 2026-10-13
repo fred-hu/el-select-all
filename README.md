@@ -105,7 +105,9 @@ git tag vx.y.z
 git push origin master --tags
 ```
 
-> 首次使用前需要在仓库 Settings → Secrets and variables → Actions 中配置 `NPM_TOKEN`（npm 的 Automation Token），否则发布步骤会报 ENEEDAUTH
+> 首次使用前需要在仓库 Settings → Secrets and variables → Actions 中配置 `NPM_TOKEN`，值为 npm 的 **Granular access token**（npm 自 2025-11 起已下线经典的 automation token）：登录 npmjs.com → 右上角头像 → **Access Tokens** → **Generate New Token** → 在 Packages and scopes 里给 `el-select-all` 授予 **Read and write**，并设置有效期 → 生成后复制（只显示一次）
+
+> 也可以不依赖 token：改用 npm 的 **Trusted Publishing（OIDC）**，在 npm 包页面的 Settings → Trusted Publisher 绑定 GitHub 仓库与工作流文件名，工作流加 `permissions: id-token: write` 即可，且会自动生成 provenance（注意：新建的 Trusted Publisher 配置必须在 2 天内完成首次发布，否则失效）
 
 > 工作流会在构建前先做三项校验，避免跑到最后才失败：`NPM_TOKEN` 是否已配置（未配置直接报错）、package.json 版本是否已存在于 npm（已存在直接报错）、tag 与版本号是否一致
 
