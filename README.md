@@ -99,7 +99,11 @@ git tag vx.y.z
 git push origin master --tags
 ```
 
-> 首次使用前需要在仓库 Settings → Secrets 中配置 `NPM_TOKEN`（npm 的 Automation Token）
+> 首次使用前需要在仓库 Settings → Secrets and variables → Actions 中配置 `NPM_TOKEN`（npm 的 Automation Token），否则发布步骤会报 ENEEDAUTH
+
+> 工作流会在构建前先做三项校验，避免跑到最后才失败：`NPM_TOKEN` 是否已配置（未配置直接报错）、package.json 版本是否已存在于 npm（已存在直接报错）、tag 与版本号是否一致
+
+> 也可以在 Actions 页面手动触发（workflow_dispatch）：此时会发布当前分支 package.json 里的版本，因此同样必须先提升 version；若该版本已存在于 npm 会被上述校验拦下
 
 > 也可以本地发布：`pnpm login` 后执行 `pnpm publish`，`prepublishOnly` 会自动先构建 lib
 
