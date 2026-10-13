@@ -77,7 +77,9 @@ pnpm run build:lib  # 构建发布用的库产物到 lib/ (commonjs + umd + umd.
 
 **1. 演示站点（自动发布）**
 
-> 向 master 推送或提交 PR 会触发 [.github/workflows/deploy.yml](https://github.com/fred-hu/el-select-all/blob/master/.github/workflows/deploy.yml)：
+> 合并到 master 前的校验由 [.github/workflows/ci.yml](https://github.com/fred-hu/el-select-all/blob/master/.github/workflows/ci.yml) 负责（仅 PR、目标是 master）：lint / 测试 / 构建，**不部署**
+
+> push 到 master 由 [.github/workflows/deploy.yml](https://github.com/fred-hu/el-select-all/blob/master/.github/workflows/deploy.yml) 负责部署：
 
 ```
 checkout -> pnpm 7.33.7 -> Node 16 -> pnpm install --frozen-lockfile
@@ -85,7 +87,11 @@ checkout -> pnpm 7.33.7 -> Node 16 -> pnpm install --frozen-lockfile
 -> peaceiris/actions-gh-pages (publish_dir: ./dist, force_orphan: true) 推送到 gh-pages 分支
 ```
 
-> `build:travis` 会把 NODE_ENV 设为 travis，vue.config.js 中 publicPath 随之变为 /el-select-all/，因此站点地址为 [https://fred-hu.github.io/el-select-all](https://fred-hu.github.io/el-select-all)；PR 只做 lint/测试/构建校验，不部署
+> `build:travis` 会把 NODE_ENV 设为 travis，vue.config.js 中 publicPath 随之变为 /el-select-all/，因此站点地址为 [https://fred-hu.github.io/el-select-all](https://fred-hu.github.io/el-select-all)
+
+> 注意: Actions 列表里的 Branch 列显示的是**触发提交所在的分支**，PR 校验会显示源分支（如 develop），但它只是校验，部署步骤已被 `if: github.ref == 'refs/heads/master'` 跳过
+
+> 两个工作流都配置了 concurrency：PR 校验的新提交会取消旧的运行，部署则排队执行避免中断
 
 **2. npm 包（自动发布）**
 

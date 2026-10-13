@@ -6,11 +6,8 @@ run-name: ${{ github.actor }} is update repo, start building...
 
 # 3 触发器
 on:
-  # push 推送
+  # 仅 push 到 master 时部署
   push:
-    branches: ["master"]
-  # PR 合并提交
-  pull_request:
     branches: ["master"]
   # 允许您从“操作”选项卡手动运行此工作流
   workflow_dispatch:
@@ -18,6 +15,11 @@ on:
 # 4 设置权限（部署 gh-pages 需要写权限）
 permissions:
   contents: write
+
+# 5 部署不并发执行（排队，避免 gh-pages 被中断的部署覆盖）
+concurrency:
+  group: deploy-master
+  cancel-in-progress: false
 
 jobs:
   build:
@@ -57,9 +59,9 @@ jobs:
       - name: Build (构建)
         run: pnpm run build:travis
 
-      # 8 部署到 gh-pages 分支（仅在 push 到 master 时执行，PR 只做校验）
+      # 8 部署到 gh-pages 分支（手动触发时也仅允许 master）
       - name: Deploy to GitHub Pages (部署到 gh-pages 分支)
-        if: github.event_name == 'push'
+        if: github.ref == 'refs/heads/master'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
