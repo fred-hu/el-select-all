@@ -55,6 +55,7 @@ Vue.use(ElSelectAll)
 pnpm install        # 或 npm install
 pnpm run serve      # 启动演示页 http://localhost:8080
 pnpm run lint       # eslint 检查
+pnpm run test       # 单元测试 (vitest, 用例在 tests/unit)
 pnpm run build      # 构建到 dist/
 ```
 
