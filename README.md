@@ -49,14 +49,15 @@ Vue.use(ElSelectAll)
 
 > 技术栈: Vue 2.6 + @vue/cli-service 4.5 (webpack 4) + Element UI 2.13
 
-> 环境要求: Node 16（与 CI 保持一致），包管理器 pnpm 7（仓库同时提供 pnpm-lock.yaml 与 package-lock.json）
+> 环境要求: Node 16（与 CI 保持一致），包管理器 pnpm 7（lockfile 为 pnpm-lock.yaml）
 
 ```
-pnpm install        # 或 npm install
+pnpm install        # 安装依赖
 pnpm run serve      # 启动演示页 http://localhost:8080
 pnpm run lint       # eslint 检查
 pnpm run test       # 单元测试 (vitest, 用例在 tests/unit)
-pnpm run build      # 构建到 dist/
+pnpm run build      # 构建演示站点到 dist/
+pnpm run build:lib  # 构建发布用的库产物到 lib/ (commonjs + umd + umd.min)
 ```
 
 > 目录说明
@@ -64,9 +65,11 @@ pnpm run build      # 构建到 dist/
 |  路径 | 说明  |
 | :------------ | :------------ |
 |  src/components/ElSelectAll.vue |  组件源码 |
-|  src/libs/index.js |  插件入口（main 字段指向此文件） |
+|  src/libs/index.js |  插件入口 |
 |  src/app.vue |  本地演示页 |
 |  public/index.html |  演示页模板，挂载点 #el-select-all |
+|  tests/unit |  单元测试用例 |
+|  lib/ |  库构建产物（构建生成，不提交） |
 
 > 分支约定: develop 用于开发，master 用于发布，改动通过 PR 合入 master
 
@@ -77,27 +80,30 @@ pnpm run build      # 构建到 dist/
 > 向 master 推送或提交 PR 会触发 [.github/workflows/deploy.yml](https://github.com/fred-hu/el-select-all/blob/master/.github/workflows/deploy.yml)：
 
 ```
-checkout -> Node 16 -> pnpm 7 -> pnpm install -> pnpm run build:travis
--> actions/upload-pages-artifact (path: ./dist)
+checkout -> pnpm 7.33.7 -> Node 16 -> pnpm install --frozen-lockfile
+-> pnpm run lint -> pnpm run test -> pnpm run build:travis
 -> peaceiris/actions-gh-pages (publish_dir: ./dist, force_orphan: true) 推送到 gh-pages 分支
 ```
 
-> `build:travis` 会把 NODE_ENV 设为 travis，vue.config.js 中 publicPath 随之变为 /el-select-all/，因此站点地址为 [https://fred-hu.github.io/el-select-all](https://fred-hu.github.io/el-select-all)
+> `build:travis` 会把 NODE_ENV 设为 travis，vue.config.js 中 publicPath 随之变为 /el-select-all/，因此站点地址为 [https://fred-hu.github.io/el-select-all](https://fred-hu.github.io/el-select-all)；PR 只做 lint/测试/构建校验，不部署
 
-**2. npm 包（手动发布）**
+**2. npm 包（自动发布）**
 
-> 仓库未配置 npm 发布的 CI，需要本地手动执行（需拥有 npm 账号权限）：
+> 推送 `v*` 形式的 tag 会触发 [.github/workflows/publish.yml](https://github.com/fred-hu/el-select-all/blob/master/.github/workflows/publish.yml)，自动校验版本号、跑 lint/测试、构建 lib 并 `npm publish`：
 
 ```
 # 1. 修改 package.json 中的 version，必须大于 npm 上已发布的最新版本
-pnpm run lint
-# 2. 提交并打 tag
+# 2. 提交后打 tag 并推送（tag 必须与 package.json 版本一致）
 git commit -am "feat: vx.y.z"
 git tag vx.y.z
 git push origin master --tags
-# 3. 登录并发布
-npm login
-npm publish
 ```
 
-> 注意: 未配置 .npmignore 与 files 字段，npm 会按 .gitignore 过滤，因此发布内容为 src、README.md、package.json（不含 dist、node_modules）；package 的 main 指向 ./src/libs/index.js，即发布的为源码，需由使用方的 vue-loader 编译
+> 首次使用前需要在仓库 Settings → Secrets 中配置 `NPM_TOKEN`（npm 的 Automation Token）
+
+> 也可以本地发布：`pnpm login` 后执行 `pnpm publish`，`prepublishOnly` 会自动先构建 lib
+
+> 发布内容由 package.json 的 files 字段决定（lib/*.js 与 src/components、src/libs），main 指向构建后的 `lib/el-select-all.common.js`，vue 与 element-ui 为 peerDependencies，需由使用方安装
+
+###### 许可证:
+> [MIT](./LICENSE)
